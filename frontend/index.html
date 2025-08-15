@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StuBite - College Canteen on Demand</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* A gradient overlay to make the text more readable */
+        .hero-bg-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.4));
+        }
+        /* A custom glow effect for the logo with the new orange theme */
+        .logo-glow-orange {
+            text-shadow: 0 0 15px rgba(251, 146, 60, 0.7), 0 0 25px rgba(234, 88, 12, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+    
+    <header class="relative h-screen w-full flex items-center justify-center p-4 text-center">
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1920&auto=format&fit=crop');">
+            <div class="absolute inset-0 hero-bg-overlay"></div>
+        </div>
+        
+        <div class="relative z-10 space-y-6 max-w-3xl mx-auto">
+            <div class="flex items-center justify-center space-x-4 text-white animate-pulse logo-glow-orange">
+                <svg xmlns="http://www.w.org/2000/svg" class="h-20 w-20 md:h-24 md:w-24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2.25L2 7l10 5 10-5-10-5zM6.5 10.5a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2h-2v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2h-2v-2zm1.5 3.5v8h8v-8h-8z"/>
+                </svg>
+                <h1 class="text-6xl md:text-8xl font-black leading-tight tracking-tight">
+                    StuBite
+                </h1>
+            </div>
+
+            <p class="text-xl md:text-2xl font-light text-gray-300">
+                Your college canteen, delivered to your hostel room.
+            </p>
+            <div id="first-order-quote" class="mt-8 p-4 bg-orange-500 text-white rounded-xl shadow-lg transform scale-0 opacity-0 transition-all duration-500 ease-in-out">
+                <p class="font-semibold text-lg italic">
+                    "Late-night cravings or midday munchies, we've got you covered."
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                <a href="../frontend/register.html" class="bg-orange-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-orange-600 transition-all duration-300 transform hover:scale-105">
+                    Order Now
+                </a>
+                <a href="../frontend/register.html" class="bg-gray-800 bg-opacity-80 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-700 transition-colors duration-300">
+                    Explore Canteens
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="popular-items" class="py-20 bg-gray-800">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-white">Our Most Craved Bites</h2>
+                    <p class="text-lg text-gray-400 mt-2">The top picks that students can't get enough of!</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-gray-900 rounded-xl overflow-hidden shadow-xl transform hover:scale-105 transition-transform duration-300">
+                        <img src="https://placehold.co/600x400/0F2027/FF9900?text=Cheeseburger" alt="Cheeseburger" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-white mb-2">Classic Cheeseburger</h3>
+                            <p class="text-gray-400">A juicy beef patty topped with melted cheese, fresh lettuce, and our special sauce.</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 rounded-xl overflow-hidden shadow-xl transform hover:scale-105 transition-transform duration-300">
+                        <img src="https://placehold.co/600x400/0F2027/FF9900?text=Veggie+Pizza" alt="Veggie Pizza" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-white mb-2">Veggie Supreme Pizza</h3>
+                            <p class="text-gray-400">Loaded with bell peppers, onions, olives, and mushrooms on a cheesy crust.</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 rounded-xl overflow-hidden shadow-xl transform hover:scale-105 transition-transform duration-300">
+                        <img src="https://placehold.co/600x400/0F2027/FF9900?text=Noodles" alt="Spicy Noodles" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-white mb-2">Spicy Hakka Noodles</h3>
+                            <p class="text-gray-400">Stir-fried noodles with a mix of zesty sauces and fresh vegetables. A student favorite!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reviews" class="py-20 bg-gray-900">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-white mb-12">What Students are Saying</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-gray-800 p-6 rounded-xl shadow-xl flex flex-col justify-between">
+                        <p class="text-gray-300 italic mb-4">
+                            "StuBite has been a game-changer! I no longer have to miss class to grab a quick snack. The delivery is super fast."
+                        </p>
+                        <p class="text-orange-400 font-semibold">- Anjali S., Hostel A, Room 205</p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-xl shadow-xl flex flex-col justify-between">
+                        <p class="text-gray-300 italic mb-4">
+                            "The variety of food is great, and the app is so easy to use. Highly recommend to all my friends!"
+                        </p>
+                        <p class="text-orange-400 font-semibold">- Rahul K., Hostel B, Room 310</p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-xl shadow-xl flex flex-col justify-between">
+                        <p class="text-gray-300 italic mb-4">
+                            "The payment process is smooth and secure. The best part is seeing my order status in real-time."
+                        </p>
+                        <p class="text-orange-400 font-semibold">- Priya M., Hostel C, Room 112</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 py-8 text-center text-gray-500 border-t border-gray-800">
+        <p>&copy; 2025 StuBite. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const quoteElement = document.getElementById('first-order-quote');
+            // This is a simulated check. In a real app, you would check if it's the user's first order from the backend.
+            const isFirstOrder = true; // For demonstration, we assume it's the first order.
+
+            if (isFirstOrder) {
+                setTimeout(() => {
+                    quoteElement.style.transform = 'scale(1)';
+                    quoteElement.style.opacity = '1';
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
