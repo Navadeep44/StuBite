@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StuBite - Checkout</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .payment-option:checked + label {
+            border-color: #FCD34D;
+            background-color: #374151;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 flex justify-center items-start min-h-screen p-4">
+
+    <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md mt-8">
+
+        <!-- Header -->
+        <header class="flex items-center mb-8">
+            <a href="#" onclick="history.back(); return false;" class="text-yellow-400 hover:text-yellow-500 transition-colors">
+                <i class="fas fa-arrow-left fa-lg"></i>
+            </a>
+            <h1 class="text-3xl font-bold text-center text-white flex-grow">Checkout</h1>
+        </header>
+
+        <!-- Order Summary -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-yellow-400 border-b border-gray-700 pb-2 mb-4">Order Summary</h2>
+            <div id="order-summary-container" class="space-y-3 text-gray-300">
+                <!-- Items will be dynamically inserted here -->
+                <div id="order-items"></div>
+                <!-- Total will be inserted here -->
+                <div id="order-total" class="flex justify-between font-semibold text-white text-lg border-t border-gray-700 pt-3 mt-3">
+                    <span>Total Amount</span>
+                    <span id="total-amount">₹0.00</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Delivery Details -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-yellow-400 border-b border-gray-700 pb-2 mb-4">Delivery Details</h2>
+            <div class="bg-gray-700 p-4 rounded-lg">
+                <p class="font-bold text-white">Student Name</p>
+                <p class="text-gray-300">Krishna Hostel, Room No. 205</p>
+                <p class="text-gray-400 text-sm">ABC College of Engineering</p>
+            </div>
+        </section>
+        
+        <!-- Delivery Time Slot -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-yellow-400 border-b border-gray-700 pb-2 mb-4">Delivery Time Slot</h2>
+            <div>
+                <select id="time-slot-select" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition-colors duration-200">
+                    <!-- Time slots will be dynamically generated here -->
+                </select>
+            </div>
+        </section>
+
+        <!-- Payment Method -->
+        <section>
+            <h2 class="text-xl font-bold text-yellow-400 border-b border-gray-700 pb-2 mb-4">Payment Method</h2>
+            <div class="space-y-4">
+                <!-- UPI Option -->
+                <div>
+                    <input type="radio" id="upi" name="payment" value="upi" class="hidden payment-option" checked>
+                    <label for="upi" class="flex items-center p-4 bg-gray-700 rounded-lg border-2 border-transparent cursor-pointer transition-colors">
+                        <i class="fab fa-google-pay fa-2x text-white mr-4"></i>
+                        <div>
+                            <p class="font-bold text-white">UPI</p>
+                            <p class="text-sm text-gray-400">Pay with GPay, PhonePe, Paytm</p>
+                        </div>
+                    </label>
+                </div>
+                <!-- Cash on Delivery Option -->
+                <div>
+                    <input type="radio" id="cod" name="payment" value="cod" class="hidden payment-option">
+                    <label for="cod" class="flex items-center p-4 bg-gray-700 rounded-lg border-2 border-transparent cursor-pointer transition-colors">
+                        <i class="fas fa-money-bill-wave fa-2x text-green-400 mr-4"></i>
+                        <div>
+                            <p class="font-bold text-white">Cash on Delivery</p>
+                            <p class="text-sm text-gray-400">Pay when your order arrives</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pay Now Button -->
+        <div class="mt-10">
+            <a href="ordersuccessful.html"><button id="pay-button" class="w-full bg-yellow-500 text-gray-900 font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Pay ₹0.00
+            </button></a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const payButton = document.getElementById('pay-button');
+            const paymentOptions = document.querySelectorAll('input[name="payment"]');
+            const orderItemsContainer = document.getElementById('order-items');
+            const totalAmountSpan = document.getElementById('total-amount');
+            const timeSlotSelect = document.getElementById('time-slot-select');
+            
+            const productCatalog = {
+                2: { name: 'Masala Maggi', price: 40 },
+                9: { name: 'Lays Potato Chips', price: 20 },
+                11: { name: 'Coca-Cola (250ml)', price: 25 },
+                12: { name: 'Thums Up (250ml)', price: 25 },
+                14: { name: 'Maaza Mango Drink', price: 20 },
+                15: { name: 'Bisleri Water Bottle', price: 20 }
+            };
+            
+            let totalAmount = 0;
+
+            function loadOrderSummary() {
+                const cart = JSON.parse(localStorage.getItem('stubiteCart')) || {};
+                orderItemsContainer.innerHTML = '';
+                totalAmount = 0;
+
+                const hasItems = Object.keys(cart).length > 0;
+
+                if (hasItems) {
+                    for (const productId in cart) {
+                        const quantity = cart[productId];
+                        const product = productCatalog[productId];
+
+                        if (product) {
+                            const itemTotal = product.price * quantity;
+                            totalAmount += itemTotal;
+
+                            const itemElement = document.createElement('div');
+                            itemElement.className = 'flex justify-between';
+                            itemElement.innerHTML = `
+                                <span>${product.name} x ${quantity}</span>
+                                <span>₹${itemTotal.toFixed(2)}</span>
+                            `;
+                            orderItemsContainer.appendChild(itemElement);
+                        }
+                    }
+                } else {
+                    orderItemsContainer.innerHTML = `<p class="text-center text-gray-400">Your cart is empty.</p>`;
+                    payButton.disabled = true;
+                }
+
+
+                totalAmountSpan.textContent = `₹${totalAmount.toFixed(2)}`;
+                updateButtonText();
+            }
+
+            function updateButtonText() {
+                const selectedOption = document.querySelector('input[name="payment"]:checked').value;
+                if (selectedOption === 'cod') {
+                    payButton.textContent = 'Place Order';
+                } else {
+                    payButton.textContent = `Pay ₹${totalAmount.toFixed(2)}`;
+                }
+            }
+
+            function generateTimeSlots() {
+                const now = new Date();
+                const openTime = new Date(now);
+                openTime.setHours(17, 0, 0, 0); // 5:00 PM
+
+                const closeTime = new Date(now);
+                closeTime.setHours(23, 0, 0, 0); // 11:00 PM
+
+                let currentTime = new Date(now);
+                
+                // Round up to the next 30-minute slot
+                const minutes = currentTime.getMinutes();
+                if (minutes > 0 && minutes < 30) {
+                    currentTime.setMinutes(30, 0, 0);
+                } else if (minutes > 30) {
+                    currentTime.setHours(currentTime.getHours() + 1, 0, 0, 0);
+                }
+
+                let slotTime = currentTime > openTime ? currentTime : openTime;
+
+                let slotsAvailable = false;
+                while (slotTime < closeTime) {
+                    const slotEnd = new Date(slotTime.getTime() + 30 * 60000);
+                    
+                    const formatTime = (date) => date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                    
+                    const option = document.createElement('option');
+                    option.value = `${formatTime(slotTime)} - ${formatTime(slotEnd)}`;
+                    option.textContent = `${formatTime(slotTime)} - ${formatTime(slotEnd)}`;
+                    timeSlotSelect.appendChild(option);
+                    slotsAvailable = true;
+
+                    slotTime = slotEnd;
+                }
+
+                if (!slotsAvailable) {
+                    const option = document.createElement('option');
+                    option.textContent = 'No delivery slots available for today';
+                    option.disabled = true;
+                    timeSlotSelect.appendChild(option);
+                    payButton.disabled = true; // Can't order if no slots
+                }
+            }
+
+            paymentOptions.forEach(option => {
+                option.addEventListener('change', updateButtonText);
+            });
+
+            // Initial load
+            loadOrderSummary();
+            generateTimeSlots();
+        });
+    </script>
+
+</body>
+</html>

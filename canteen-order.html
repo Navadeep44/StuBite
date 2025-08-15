@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen - Order Management</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .status-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-pending { background-color: #4b5563; color: #e5e7eb; }
+        .status-accepted { background-color: #16a34a; color: #dcfce7; }
+        .status-rejected { background-color: #dc2626; color: #fee2e2; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8 pb-4 border-b border-gray-700">
+            <h1 class="text-3xl md:text-4xl font-bold text-white">
+                <i class="fas fa-receipt text-yellow-400"></i> Canteen Orders
+            </h1>
+            <div class="text-right">
+                <p class="font-bold text-lg text-white">Krishna Canteen</p>
+                <a href="#" class="text-sm text-yellow-400 hover:underline">Logout</a>
+            </div>
+        </header>
+
+        <!-- Orders Grid -->
+        <main id="orders-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Order cards will be dynamically injected here -->
+        </main>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const ordersGrid = document.getElementById('orders-grid');
+
+        // --- Mock Order Data with Time Slots ---
+        // In a real application, this data would come from a server/database.
+        const orders = [
+            {
+                orderId: 'ORD101',
+                studentName: 'Rohan Sharma',
+                location: 'Krishna Hostel, Room 205',
+                timeSlot: '5:30 PM - 6:00 PM',
+                paymentMethod: 'UPI',
+                status: 'pending',
+                items: [
+                    { name: 'Masala Maggi', quantity: 2, price: 40 },
+                    { name: 'Coca-Cola (250ml)', quantity: 1, price: 25 }
+                ]
+            },
+            {
+                orderId: 'ORD102',
+                studentName: 'Priya Patel',
+                location: 'Gandhi Hostel, Room 112',
+                timeSlot: '7:00 PM - 7:30 PM',
+                paymentMethod: 'COD',
+                status: 'pending',
+                items: [
+                    { name: 'Lays Potato Chips', quantity: 3, price: 20 },
+                    { name: 'Maaza Mango Drink', quantity: 2, price: 20 },
+                    { name: 'Bisleri Water Bottle', quantity: 1, price: 20 }
+                ]
+            },
+            {
+                orderId: 'ORD103',
+                studentName: 'Ankit Desai',
+                location: 'Nehru Hostel, Room 301',
+                timeSlot: '9:00 PM - 9:30 PM',
+                paymentMethod: 'UPI',
+                status: 'pending',
+                items: [
+                    { name: 'Thums Up (250ml)', quantity: 4, price: 25 }
+                ]
+            }
+        ];
+
+        // --- Render Orders Function ---
+        function renderOrders() {
+            ordersGrid.innerHTML = '';
+            orders.forEach(order => {
+                const card = document.createElement('div');
+                card.id = `order-${order.orderId}`;
+                card.className = 'bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col';
+                
+                const total = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                let itemsHtml = '';
+                order.items.forEach(item => {
+                    itemsHtml += `<li class="flex justify-between"><span class="text-gray-300">${item.name} x ${item.quantity}</span> <span>₹${(item.price * item.quantity).toFixed(2)}</span></li>`;
+                });
+
+                card.innerHTML = `
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-white">${order.studentName}</h3>
+                                <p class="text-sm text-yellow-400"><i class="fas fa-map-marker-alt fa-fw mr-1"></i> ${order.location}</p>
+                                <p class="text-sm text-gray-300 mt-1"><i class="fas fa-clock fa-fw mr-1"></i> ${order.timeSlot}</p>
+                            </div>
+                            <span class="status-tag status-${order.status}" id="status-${order.orderId}">${order.status}</span>
+                        </div>
+                        
+                        <div class="border-t border-b border-gray-700 my-4 py-3">
+                            <ul class="space-y-2 text-sm">
+                                ${itemsHtml}
+                            </ul>
+                        </div>
+
+                        <div class="flex justify-between items-center font-bold text-lg mb-4">
+                            <span class="text-gray-300">Total:</span>
+                            <span class="text-white">₹${total.toFixed(2)}</span>
+                        </div>
+                        <div class="text-center text-sm text-gray-400">
+                           Payment: <span class="font-semibold ${order.paymentMethod === 'UPI' ? 'text-green-400' : 'text-orange-400'}">${order.paymentMethod}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-4" id="actions-${order.orderId}">
+                        <button class="order-action-btn w-full bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-lg transition-colors" data-action="accept" data-id="${order.orderId}">
+                            <i class="fas fa-check mr-2"></i> Accept
+                        </button>
+                        <button class="order-action-btn w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg transition-colors" data-action="reject" data-id="${order.orderId}">
+                            <i class="fas fa-times mr-2"></i> Reject
+                        </button>
+                    </div>
+                `;
+                ordersGrid.appendChild(card);
+            });
+        }
+
+        // --- Event Listener for Actions ---
+        ordersGrid.addEventListener('click', e => {
+            const target = e.target.closest('.order-action-btn');
+            if (!target) return;
+
+            const orderId = target.dataset.id;
+            const action = target.dataset.action;
+            
+            const order = orders.find(o => o.orderId === orderId);
+            if (!order) return;
+
+            order.status = action === 'accept' ? 'accepted' : 'rejected';
+
+            // Update UI
+            const statusTag = document.getElementById(`status-${orderId}`);
+            const actionsDiv = document.getElementById(`actions-${orderId}`);
+            
+            statusTag.textContent = order.status;
+            statusTag.className = `status-tag status-${order.status}`;
+            
+            // Provide feedback and remove buttons
+            let feedbackMessage = '';
+            if (action === 'accept') {
+                feedbackMessage = `<p class="text-center text-green-400 font-semibold">Order Accepted</p>`;
+            } else {
+                feedbackMessage = `<p class="text-center text-red-400 font-semibold">Order Rejected</p>`;
+            }
+            actionsDiv.innerHTML = feedbackMessage;
+        });
+
+        // --- Initial Load ---
+        renderOrders();
+    });
+    </script>
+</body>
+</html>

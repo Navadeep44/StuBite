@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StuBite - Register</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for the tabs */
+        .tab-button.active {
+            border-bottom: 3px solid #FCD34D;
+            color: #FCD34D;
+        }
+        /* Simple fade-in animation for forms */
+        .form-fade-enter {
+            opacity: 0;
+            transition: opacity 300ms ease-in-out;
+        }
+        .form-fade-enter-active {
+            opacity: 1;
+        }
+        /* Spinner for loading state */
+        .spinner {
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border-left-color: #000;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-xl">
+        
+        <!-- Header with Back Button and Title -->
+        <div class="flex justify-between items-center mb-6">
+            <a href="login.html" class="text-yellow-400 hover:text-yellow-500 transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </a>
+            <h1 class="text-3xl font-bold text-center flex-grow">Register</h1>
+            <div></div> <!-- Spacer to keep title centered -->
+        </div>
+
+        <!-- Tab Navigation for Student/Canteen -->
+        <div class="flex border-b border-gray-700 mb-6">
+            <button id="student-tab" class="flex-1 text-center py-3 px-4 font-semibold text-lg transition-colors duration-200 tab-button active">
+                Student
+            </button>
+            <button id="canteen-tab" class="flex-1 text-center py-3 px-4 font-semibold text-lg transition-colors duration-200 tab-button">
+                Canteen
+            </button>
+        </div>
+
+        <!-- Form Feedback Message Area -->
+        <div id="form-message" class="hidden text-center p-3 rounded-lg mb-6 text-sm"></div>
+
+        <!-- Student Registration Form -->
+        <form id="student-form" class="space-y-6 form-fade-enter form-fade-enter-active" novalidate>
+            <div>
+                <label for="student-mobile" class="block text-sm font-medium text-gray-400">Mobile Number</label>
+                <input type="tel" id="student-mobile" name="student-mobile" required class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition-colors duration-200">
+            </div>
+            <div>
+                <label for="student-college" class="block text-sm font-medium text-gray-400">College Name</label>
+                <input type="text" id="student-college" name="student-college" required class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition-colors duration-200">
+            </div>
+            <div>
+                <label for="student-hostel" class="block text-sm font-medium text-gray-400">Hostel Name</label>
+                <input type="text" id="student-hostel" name="student-hostel" required class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition-colors duration-200">
+            </div>
+            <div>
+                <label for="student-room" class="block text-sm font-medium text-gray-400">Hostel Room Number</label>
+                <input type="text" id="student-room" name="student-room" required class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition-colors duration-200">
+            </div>
+            <button type="submit" class="w-full bg-yellow-500 text-gray-900 font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-yellow-400 transition-all duration-300 flex items-center justify-center disabled:opacity-75">
+                <span class="button-text">Register as Student</span>
+                <div class="spinner hidden ml-3"></div>
+            </button>
+        </form>
+
+        <!-- Canteen Registration Form (hidden by default) -->
+        <form id="canteen-form" class="space-y-6 hidden form-fade-enter" novalidate>
+            <div>
+                <label for="canteen-name" class="block text-sm font-medium text-gray-400">Canteen Name</label>
+                <input type="text" id="canteen-name" name="canteen-name" required class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition-colors duration-200">
+            </div>
+            <div>
+                <label for="canteen-college" class="block text-sm font-medium text-gray-400">College Name</label>
+                <input type="text" id="canteen-college" name="canteen-college" required class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition-colors duration-200">
+            </div>
+            <div>
+                <label for="canteen-mobile" class="block text-sm font-medium text-gray-400">Mobile Number</label>
+                <input type="tel" id="canteen-mobile" name="canteen-mobile" required class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition-colors duration-200">
+            </div>
+            <div>
+                <label for="canteen-password" class="block text-sm font-medium text-gray-400">Password</label>
+                <input type="password" id="canteen-password" name="canteen-password" required minlength="6" class="mt-1 block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition-colors duration-200">
+            </div>
+            <button type="submit" class="w-full bg-yellow-500 text-gray-900 font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-yellow-400 transition-all duration-300 flex items-center justify-center disabled:opacity-75">
+                <span class="button-text">Register as Canteen</span>
+                <div class="spinner hidden ml-3"></div>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const studentTab = document.getElementById('student-tab');
+            const canteenTab = document.getElementById('canteen-tab');
+            const studentForm = document.getElementById('student-form');
+            const canteenForm = document.getElementById('canteen-form');
+            const messageDiv = document.getElementById('form-message');
+
+            // Function to switch tabs
+            function switchTab(activeTab, inactiveTab, activeForm, inactiveForm) {
+                activeTab.classList.add('active');
+                inactiveTab.classList.remove('active');
+                
+                // Add fade-in animation
+                activeForm.classList.remove('hidden');
+                setTimeout(() => {
+                    activeForm.classList.add('form-fade-enter-active');
+                }, 10);
+
+                inactiveForm.classList.add('hidden');
+                inactiveForm.classList.remove('form-fade-enter-active');
+                
+                // Clear any previous messages
+                hideMessage();
+            }
+
+            // Event listener for the student tab
+            studentTab.addEventListener('click', () => {
+                switchTab(studentTab, canteenTab, studentForm, canteenForm);
+            });
+
+            // Event listener for the canteen tab
+            canteenTab.addEventListener('click', () => {
+                switchTab(canteenTab, studentTab, canteenForm, studentForm);
+            });
+
+            // --- Form Submission Logic ---
+
+            function showMessage(message, isError = false) {
+                messageDiv.textContent = message;
+                messageDiv.className = `p-3 rounded-lg mb-6 text-sm text-center ${isError ? 'bg-red-800 text-red-200' : 'bg-green-800 text-green-200'}`;
+                messageDiv.classList.remove('hidden');
+            }
+
+            function hideMessage() {
+                messageDiv.classList.add('hidden');
+            }
+
+            function handleFormSubmit(event) {
+                event.preventDefault(); // Stop default form submission
+                hideMessage();
+
+                const form = event.target;
+                const submitButton = form.querySelector('button[type="submit"]');
+                const buttonText = submitButton.querySelector('.button-text');
+                const spinner = submitButton.querySelector('.spinner');
+
+                // --- Basic Validation ---
+                let isValid = true;
+                let errorMessage = '';
+
+                const requiredFields = form.querySelectorAll('[required]');
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        const label = form.querySelector(`label[for="${field.id}"]`).textContent;
+                        errorMessage = `${label} is a required field.`;
+                    }
+                    field.classList.toggle('border-red-500', !field.value.trim());
+                    field.classList.toggle('border-gray-600', !!field.value.trim());
+                });
+
+                if (!isValid) {
+                    showMessage(errorMessage, true);
+                    return;
+                }
+                
+                // Mobile number validation
+                const mobileInput = form.querySelector('input[type="tel"]');
+                if (mobileInput && !/^\d{10}$/.test(mobileInput.value)) {
+                    showMessage('Please enter a valid 10-digit mobile number.', true);
+                    mobileInput.classList.add('border-red-500');
+                    mobileInput.classList.remove('border-gray-600');
+                    return;
+                }
+
+                // Password length validation
+                const passwordInput = form.querySelector('input[type="password"]');
+                if (passwordInput && passwordInput.value.length < 6) {
+                    showMessage('Password must be at least 6 characters long.', true);
+                    passwordInput.classList.add('border-red-500');
+                    passwordInput.classList.remove('border-gray-600');
+                    return;
+                }
+
+                // --- Simulate Submission ---
+                buttonText.classList.add('hidden');
+                spinner.classList.remove('hidden');
+                submitButton.disabled = true;
+
+                setTimeout(() => {
+                    // Re-enable button and hide spinner
+                    buttonText.classList.remove('hidden');
+                    spinner.classList.add('hidden');
+                    submitButton.disabled = false;
+
+                    // Show success message and clear form
+                    showMessage('Registration successful! You can now log in.', false);
+                    form.reset();
+                    requiredFields.forEach(field => {
+                        field.classList.remove('border-red-500');
+                        field.classList.add('border-gray-600');
+                    });
+
+                }, 1500); // Simulate 1.5 second network delay
+            }
+
+            studentForm.addEventListener('submit', handleFormSubmit);
+            canteenForm.addEventListener('submit', handleFormSubmit);
+        });
+    </script>
+</body>
+</html>
