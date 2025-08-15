@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StuBite - Order Successful</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .success-icon {
+            animation: pop-in 0.5s ease-out forwards;
+        }
+        @keyframes pop-in {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 flex justify-center items-center min-h-screen p-4">
+
+    <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md text-center">
+
+        <!-- Success Icon and Message -->
+        <div class="mb-8">
+            <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 success-icon">
+                <i class="fas fa-check fa-4x text-white"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-white">Order Placed!</h1>
+            <p class="text-gray-400 mt-2">Thank you! Your order is being prepared.</p>
+        </div>
+
+        <!-- Order Details -->
+        <div class="text-left bg-gray-700 p-4 rounded-lg">
+            <h2 class="text-lg font-bold text-yellow-400 border-b border-gray-600 pb-2 mb-3">Your Order Details</h2>
+            <div id="order-items" class="space-y-2 text-sm">
+                <!-- Dynamic items will be loaded here -->
+            </div>
+            <div class="flex justify-between font-semibold text-white text-md border-t border-gray-600 pt-3 mt-3">
+                <span>Total Paid</span>
+                <span id="total-amount">₹0.00</span>
+            </div>
+            <div class="mt-4">
+                <p class="font-bold text-white">Delivery Time:</p>
+                <p id="delivery-time" class="text-yellow-400">Not selected</p>
+            </div>
+        </div>
+
+        <!-- Back to Home Button -->
+        <div class="mt-10">
+            <a href="college-canteens.html" class="w-full block bg-yellow-500 text-gray-900 font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-yellow-400 transition-colors">
+                Back to Canteens
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const orderItemsContainer = document.getElementById('order-items');
+            const totalAmountSpan = document.getElementById('total-amount');
+            const deliveryTimeSpan = document.getElementById('delivery-time');
+
+            const productCatalog = {
+                2: { name: 'Masala Maggi', price: 40 },
+                9: { name: 'Lays Potato Chips', price: 20 },
+                11: { name: 'Coca-Cola (250ml)', price: 25 },
+                12: { name: 'Thums Up (250ml)', price: 25 },
+                14: { name: 'Maaza Mango Drink', price: 20 },
+                15: { name: 'Bisleri Water Bottle', price: 20 }
+            };
+
+            function loadConfirmationDetails() {
+                const cart = JSON.parse(localStorage.getItem('stubiteCart')) || {};
+                const timeSlot = localStorage.getItem('deliveryTimeSlot') || 'Not specified';
+                let totalAmount = 0;
+
+                if (Object.keys(cart).length > 0) {
+                    for (const productId in cart) {
+                        const quantity = cart[productId];
+                        const product = productCatalog[productId];
+                        if (product) {
+                            const itemTotal = product.price * quantity;
+                            totalAmount += itemTotal;
+                            const itemElement = document.createElement('div');
+                            itemElement.className = 'flex justify-between text-gray-300';
+                            itemElement.innerHTML = `<span>${product.name} x ${quantity}</span><span>₹${itemTotal.toFixed(2)}</span>`;
+                            orderItemsContainer.appendChild(itemElement);
+                        }
+                    }
+                } else {
+                    orderItemsContainer.innerHTML = `<p class="text-center text-gray-400">No items were in your order.</p>`;
+                }
+
+                totalAmountSpan.textContent = `₹${totalAmount.toFixed(2)}`;
+                deliveryTimeSpan.textContent = timeSlot;
+
+                // Clean up local storage after displaying the confirmation
+                localStorage.removeItem('stubiteCart');
+                localStorage.removeItem('deliveryTimeSlot');
+            }
+
+            loadConfirmationDetails();
+        });
+    </script>
+
+</body>
+</html>
