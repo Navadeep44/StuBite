@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresh Bite Cafe - Menu</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Add padding to the bottom to prevent content from being hidden by the checkout bar */
+            padding-bottom: 100px; 
+        }
+        /* Style for the cart count badge */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            height: 22px;
+            width: 22px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Styles for the expandable checkout bar */
+        #checkout-bar {
+            transition: all 300ms ease-in-out;
+            transform: translateY(100%);
+        }
+        #checkout-bar.visible {
+            transform: translateY(0);
+        }
+        #cart-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 300ms ease-in-out;
+        }
+        #checkout-bar.expanded #cart-details {
+            max-height: 50vh; /* Adjust as needed */
+            overflow-y: auto;
+        }
+        #expand-icon {
+            transition: transform 300ms ease-in-out;
+        }
+        #checkout-bar.expanded #expand-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <a href="login.html" class="text-yellow-400 hover:text-yellow-500 transition-colors">
+                <i class="fas fa-arrow-left fa-lg"></i>
+            </a>
+            <a href="canteen-order.html" class="text-3xl md:text-4xl font-bold text-center text-white">
+                <i class="fas fa-store text-yellow-400"></i> Fresh Bite Cafe
+            </h1></a>
+            <div class="relative">
+                <div id="cart-icon" class="text-yellow-400">
+                    <i class="fas fa-shopping-cart fa-2x"></i>
+                    <span id="cart-count" class="cart-badge bg-red-600 text-white font-bold rounded-full">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Product Grid -->
+        <main id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Product cards will be injected here by JavaScript -->
+        </main>
+
+    </div>
+
+    <!-- Checkout Bar (Initially Hidden) -->
+    <div id="checkout-bar" class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t-2 border-yellow-500 shadow-lg">
+        <div id="cart-details" class="p-4 border-b border-gray-700">
+            <!-- Dynamic cart items will be injected here -->
+        </div>
+        <div id="summary-bar" class="container mx-auto flex justify-between items-center p-4 cursor-pointer">
+            <div class="flex items-center">
+                <p id="checkout-item-count" class="font-bold text-white">0 Items</p>
+                <span class="mx-2 text-gray-500">|</span>
+                <p id="checkout-total-price" class="text-xl font-bold text-yellow-400">₹0.00</p>
+            </div>
+            <div class="flex items-center">
+                 <a href="paymentpage.html"><button id="checkout-button" class="bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-lg shadow-lg hover:bg-yellow-400 transition-colors mr-4">
+                    Checkout
+                </button></a>
+                <i id="expand-icon" class="fas fa-chevron-up text-yellow-400"></i>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const productGrid = document.getElementById('product-grid');
+        const cartCount = document.getElementById('cart-count');
+        
+        // Checkout Bar elements
+        const checkoutBar = document.getElementById('checkout-bar');
+        const summaryBar = document.getElementById('summary-bar');
+        const checkoutItemCount = document.getElementById('checkout-item-count');
+        const checkoutTotalPrice = document.getElementById('checkout-total-price');
+        const checkoutButton = document.getElementById('checkout-button');
+        const cartDetailsContainer = document.getElementById('cart-details');
+
+        // --- Product Data ---
+        const products = [
+            { id: 2, name: 'Strawberry Flavour cake', price: 200 },
+            { id: 9, name: 'Chocolate Flavour cake', price: 200 },
+            { id: 11, name: 'venilla Cake', price: 250 },
+            { id: 12, name: 'Thums Up (250ml)', price: 25 },
+            { id: 14, name: 'Maaza Mango Drink', price: 20 },
+            { id: 15, name: 'Veg Puff', price: 20 }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('stubiteCart')) || {};
+
+        // --- Render Products ---
+        function renderProducts() {
+            productGrid.innerHTML = '';
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300';
+                card.innerHTML = `
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-white">${product.name}</h3>
+                        <p class="text-xl font-semibold text-yellow-400 mt-1">₹${product.price.toFixed(2)}</p>
+                        <div class="flex items-center justify-between mt-4">
+                            <div class="flex items-center border border-gray-600 rounded-lg">
+                                <button class="quantity-btn p-2" data-action="decrease" data-id="${product.id}">-</button>
+                                <input type="number" class="quantity-input w-12 text-center bg-transparent border-none focus:ring-0" value="1" min="1" data-id="${product.id}">
+                                <button class="quantity-btn p-2" data-action="increase" data-id="${product.id}">+</button>
+                            </div>
+                            <button class="add-to-cart-btn bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-lg hover:bg-yellow-400 transition-colors" data-id="${product.id}">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+        }
+
+        // --- Cart Logic ---
+        function updateCart(productId, quantity) {
+            if (quantity > 0) {
+                cart[productId] = quantity;
+            } else {
+                delete cart[productId];
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const totalItems = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+            cartCount.textContent = totalItems;
+            
+            let grandTotal = 0;
+            cartDetailsContainer.innerHTML = ''; // Clear previous details
+
+            for (const productId in cart) {
+                const product = products.find(p => p.id == productId);
+                if (product) {
+                    const quantity = cart[productId];
+                    grandTotal += product.price * quantity;
+                    
+                    // Render item in the detailed cart view
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'flex justify-between items-center py-2';
+                    itemElement.innerHTML = `
+                        <p class="text-white">${product.name}</p>
+                        <div class="flex items-center border border-gray-600 rounded-lg">
+                            <button class="cart-quantity-btn p-2" data-action="decrease" data-id="${productId}">-</button>
+                            <span class="w-8 text-center">${quantity}</span>
+                            <button class="cart-quantity-btn p-2" data-action="increase" data-id="${productId}">+</button>
+                        </div>
+                    `;
+                    cartDetailsContainer.appendChild(itemElement);
+                }
+            }
+
+            // Update summary and manage visibility of the checkout bar
+            if (totalItems > 0) {
+                checkoutItemCount.textContent = `${totalItems} Item${totalItems > 1 ? 's' : ''}`;
+                checkoutTotalPrice.textContent = `₹${grandTotal.toFixed(2)}`;
+                checkoutBar.classList.add('visible');
+            } else {
+                checkoutBar.classList.remove('visible');
+                checkoutBar.classList.remove('expanded'); // Also collapse if empty
+            }
+        }
+
+        // --- Event Listeners ---
+        productGrid.addEventListener('click', e => {
+            const target = e.target;
+            const productId = target.dataset.id;
+            if (!productId) return;
+
+            const card = target.closest('.bg-gray-800');
+            const input = card.querySelector(`.quantity-input[data-id="${productId}"]`);
+            let quantity = parseInt(input.value);
+
+            if (target.matches('.quantity-btn')) {
+                if (target.dataset.action === 'increase') quantity++;
+                else quantity = Math.max(1, quantity - 1);
+                input.value = quantity;
+            }
+
+            if (target.matches('.add-to-cart-btn')) {
+                const currentQuantity = cart[productId] || 0;
+                updateCart(productId, currentQuantity + quantity);
+                
+                target.textContent = 'Added!';
+                target.classList.replace('bg-yellow-500', 'bg-green-500');
+                setTimeout(() => {
+                    target.textContent = 'Add';
+                    target.classList.replace('bg-green-500', 'bg-yellow-500');
+                }, 1000);
+            }
+        });
+        
+        // Listener for quantity controllers inside the cart
+        cartDetailsContainer.addEventListener('click', e => {
+            const target = e.target;
+            if (!target.matches('.cart-quantity-btn')) return;
+
+            const productId = target.dataset.id;
+            let quantity = cart[productId];
+
+            if (target.dataset.action === 'increase') quantity++;
+            else quantity--;
+            
+            updateCart(productId, quantity);
+        });
+
+        // Listener to expand/collapse the cart details
+        summaryBar.addEventListener('click', () => {
+            checkoutBar.classList.toggle('expanded');
+        });
+
+        checkoutButton.addEventListener('click', () => {
+            localStorage.setItem('stubiteCart', JSON.stringify(cart));
+            window.location.href = 'payment.html';
+        });
+
+        // --- Initial Load ---
+        renderProducts();
+        updateCartUI();
+    });
+    </script>
+</body>
+</html>
